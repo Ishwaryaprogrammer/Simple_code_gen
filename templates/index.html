@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Code Generator</title>
+    <link rel="stylesheet" href="static/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Simple Code Generator</h1>
+        <p>Enter an arithmetic expression below:</p>
+        <form id="expressionForm">
+            <input type="text" id="expression" placeholder="e.g., a = b + c" required>
+            <button type="submit">Generate Instructions</button>
+        </form>
+        <div id="result" class="result"></div>
+    </div>
+
+    <script>
+        document.getElementById('expressionForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const expression = document.getElementById('expression').value;
+
+            fetch('/generate', {
+               method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ expression })
+            })
+
+
+            .then(response => response.json())
+            .then(data => {
+                // Format the instructions with line breaks
+                const formattedInstructions = data.instructions.replace(/\\n/g, '\n');
+                document.getElementById('result').textContent = formattedInstructions;
+            })
+            .catch(error => {
+                document.getElementById('result').textContent = 'Error: ' + error.message;
+            });
+            
+        });
+    </script>
+</body>
+</html>
